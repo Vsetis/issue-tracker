@@ -14,16 +14,14 @@ const inter = Inter({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Theme appearance="light" accentColor="iris">
-          <Navbar />
-          <main className="p-5">
-            <Component {...pageProps} />
-          </main>
-        </Theme>
-      </body>
-    </html>
+    <Theme appearance="light" accentColor="iris">
+      <main className={inter.className}>
+        <Navbar />
+        <div className="container mx-auto p-5">
+          <Component {...pageProps} />
+        </div>
+      </main>
+    </Theme>
   );
 };
 
