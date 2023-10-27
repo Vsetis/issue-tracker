@@ -59,4 +59,14 @@ export const issueRouter = createTRPCRouter({
         orderBy: orderCondition,
       });
     }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.issue.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });
