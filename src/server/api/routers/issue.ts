@@ -37,21 +37,29 @@ export const issueRouter = createTRPCRouter({
       let whereCondition = {};
       let orderCondition = {};
 
-      if (input.status === "all") {
-      } else if (input.status === "open") {
-        whereCondition = { status: "OPEN" };
-      } else if (input.status === "closed") {
-        whereCondition = { status: "CLOSED" };
-      } else if (input.status === "progress") {
-        whereCondition = { status: "IN_PROGRESS" };
+      switch (input.status) {
+        case "all":
+          break;
+        case "open":
+          whereCondition = { status: "OPEN" };
+          break;
+        case "closed":
+          whereCondition = { status: "CLOSED" };
+        case "progress":
+          whereCondition = { status: "IN_PROGRESS" };
+        default:
+          break;
       }
 
-      if (input.orderOption === "time") {
-        orderCondition = { createdAt: "desc" };
-      } else if (input.orderOption === "title") {
-        orderCondition = { title: "asc" };
-      } else if (input.orderOption === "status") {
-        orderCondition = { status: "asc" };
+      switch (input.orderOption) {
+        case "time":
+          orderCondition = { createdAt: "desc" };
+        case "title":
+          orderCondition = { title: "asc" };
+        case "status":
+          orderCondition = { status: "asc" };
+        default:
+          break;
       }
 
       return ctx.db.issue.findMany({
