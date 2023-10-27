@@ -54,13 +54,17 @@ export const issueRouter = createTRPCRouter({
       switch (input.orderOption) {
         case "time":
           orderCondition = { createdAt: "desc" };
+          break;
         case "title":
           orderCondition = { title: "asc" };
+          break;
         case "status":
           orderCondition = { status: "asc" };
+          break;
         default:
           break;
       }
+      console.log(orderCondition);
 
       return ctx.db.issue.findMany({
         where: whereCondition,
@@ -72,6 +76,16 @@ export const issueRouter = createTRPCRouter({
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
       return ctx.db.issue.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
+  delete: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.issue.delete({
         where: {
           id: input.id,
         },
