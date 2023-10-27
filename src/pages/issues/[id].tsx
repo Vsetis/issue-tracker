@@ -28,7 +28,7 @@ const IssuePage = () => {
   );
   const { mutate: deleteIssue } = api.issue.delete.useMutation({
     onSuccess: () => {
-      router.push("/issues");
+      void router.push("/issues");
     },
   });
   const issue = issueQuery.data;
