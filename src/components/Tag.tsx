@@ -4,11 +4,11 @@ const Tag = ({ children }: { children: React.ReactNode }) => {
     <p
       className={`${
         status === "OPEN"
-          ? "bg-green-500/20 text-green-700"
+          ? "bg-red-500/20 text-red-700"
           : status === "IN_PROGRESS"
           ? "bg-orange-500/20 text-orange-700"
           : status === "CLOSED"
-          ? "bg-red-500/20 text-red-700"
+          ? "bg-green-500/20 text-green-700"
           : ""
       } w-max rounded px-1 text-center text-[12px] font-medium`}
     >
