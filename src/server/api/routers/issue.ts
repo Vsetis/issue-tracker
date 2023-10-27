@@ -10,7 +10,9 @@ export const issueRouter = createTRPCRouter({
         description: z.string().min(1),
       }),
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       return ctx.db.issue.create({
         data: {
           title: input.title,
