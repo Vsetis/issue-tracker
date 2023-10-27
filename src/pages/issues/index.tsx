@@ -5,8 +5,11 @@ import SelectMenu from "~/components/RadixUI/SelectMenu";
 import Tag from "~/components/Tag";
 import { api } from "~/utils/api";
 import { GoArrowUp } from "react-icons/go";
+import { useRouter } from "next/router";
 
 const IssuesPage = () => {
+  const { push } = useRouter();
+
   const [status, setStatus] = useState("all");
   const [orderOption, setOrderOption] = useState("time");
 
@@ -25,7 +28,7 @@ const IssuesPage = () => {
       </div>
       <div className="overflow-hidden rounded border">
         <table className="w-full">
-          <thead className="w-full bg-black/5">
+          <thead className="w-full bg-black/10">
             <tr className="rounded border-b">
               <th
                 onClick={() => setOrderOption("title")}
@@ -58,7 +61,11 @@ const IssuesPage = () => {
 
           <tbody>
             {issueQuery?.map((issue) => (
-              <tr key={issue.id} className="border-b px-4 last:border-none">
+              <tr
+                onClick={() => push(`/issues/${issue.id}`)}
+                key={issue.id}
+                className="cursor-pointer border-b px-4 transition-all last:border-none hover:bg-black/5"
+              >
                 <td className="w-[60%] p-4">{issue.title}</td>
                 <td className="w-[20%]">
                   <Tag>{issue.status}</Tag>

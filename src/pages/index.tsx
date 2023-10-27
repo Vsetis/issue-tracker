@@ -1,4 +1,11 @@
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Cell,
+} from "recharts";
 import Tag from "~/components/Tag";
 
 import { api } from "~/utils/api";
@@ -11,9 +18,13 @@ export default function Home() {
   const countInProgress = issueData?.filter((i) => i.status === "IN_PROGRESS");
   const countClosed = issueData?.filter((i) => i.status === "CLOSED");
 
+  const colors = ["#f87171", "#fb923c", "#4ade80"];
   const data = [
     { status: "OPEN", count: countOpen?.length ?? 0 },
-    { status: "IN PROGRESS", count: countInProgress?.length ?? 0 },
+    {
+      status: "IN PROGRESS",
+      count: countInProgress?.length ?? 0,
+    },
     { status: "CLOSED", count: countClosed?.length ?? 0 },
   ];
 
@@ -34,7 +45,16 @@ export default function Home() {
               <BarChart data={data}>
                 <YAxis />
                 <XAxis dataKey="status" />
-                <Bar dataKey="count" barSize={80} fill="#000" />
+                <Bar
+                  dataKey="count"
+                  barSize={80}
+                  className="relative"
+                  fill="#15803d"
+                >
+                  {data.map((_, i) => (
+                    <Cell key={i} fill={colors[i]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
