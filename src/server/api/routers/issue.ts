@@ -22,6 +22,11 @@ export const issueRouter = createTRPCRouter({
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.issue.findMany();
+    return ctx.db.issue.findMany({
+      take: 10,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
   }),
 });
