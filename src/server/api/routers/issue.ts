@@ -45,6 +45,7 @@ export const issueRouter = createTRPCRouter({
           break;
         case "closed":
           whereCondition = { status: "CLOSED" };
+          break;
         case "progress":
           whereCondition = { status: "IN_PROGRESS" };
         default:
