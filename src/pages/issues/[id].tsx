@@ -3,6 +3,7 @@ import { FiEdit } from "react-icons/fi";
 import { useRouter } from "next/router";
 import Tag from "~/components/Tag";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 function LoadingSkeleton() {
   return (
@@ -58,7 +59,8 @@ const IssuePage = () => {
         </div>
         <div className=" flex min-w-[200px] max-w-[300px] flex-col gap-4">
           <Button className="w-full py-5">
-            <FiEdit className="h-4 w-4" /> Edit Issue
+            <FiEdit className="h-4 w-4" />
+            <Link href={`/issues/edit/${id}`}>Edit Issue</Link>
           </Button>
           <AlertDialog.Root>
             <AlertDialog.Trigger>

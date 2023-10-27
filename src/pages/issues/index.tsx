@@ -1,11 +1,18 @@
-import { Badge, Button } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SelectMenu from "~/components/RadixUI/SelectMenu";
 import Tag from "~/components/Tag";
 import { api } from "~/utils/api";
 import { GoArrowUp } from "react-icons/go";
 import { useRouter } from "next/router";
+
+const items = [
+  { label: "All", value: "all" },
+  { label: "Open", value: "open" },
+  { label: "In Progress", value: "progress" },
+  { label: "Closed", value: "closed" },
+];
 
 const IssuesPage = () => {
   const { push } = useRouter();
@@ -21,7 +28,7 @@ const IssuesPage = () => {
   return (
     <main>
       <div className="mb-4 flex items-center justify-between">
-        <SelectMenu status={status} setStatus={setStatus} />
+        <SelectMenu state={status} setState={setStatus} items={items} />
         <Button>
           <Link href="/issues/new">New Issue</Link>
         </Button>
