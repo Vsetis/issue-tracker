@@ -26,7 +26,16 @@ const IssuePage = () => {
     { id },
     { enabled: router.isReady },
   );
+  const { mutate: deleteIssue } = api.issue.delete.useMutation({
+    onSuccess: () => {
+      router.push("/issues");
+    },
+  });
   const issue = issueQuery.data;
+
+  if (!issueQuery.isLoading && !issueQuery.data) {
+    return <>404 Issue not found</>;
+  }
 
   return (
     <main>
@@ -53,7 +62,10 @@ const IssuePage = () => {
           </Button>
           <AlertDialog.Root>
             <AlertDialog.Trigger>
-              <Button color="red" className="w-full bg-red-500 py-5">
+              <Button
+                color="red"
+                className="w-full bg-red-500 py-5 transition-all hover:bg-red-600"
+              >
                 Delete Issue
               </Button>
             </AlertDialog.Trigger>
@@ -76,7 +88,7 @@ const IssuePage = () => {
                 </AlertDialog.Cancel>
                 <AlertDialog.Action>
                   <Button
-                    onClick={() => console.log("delete")}
+                    onClick={() => deleteIssue({ id })}
                     className="trnasition-all bg-red-500 hover:bg-red-600"
                   >
                     Delete Issue
