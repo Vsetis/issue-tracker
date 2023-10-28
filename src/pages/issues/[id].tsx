@@ -62,10 +62,12 @@ const IssuePage = () => {
           )}
         </div>
         <div className=" flex min-w-[200px] max-w-[300px] flex-col gap-4">
-          <Button className="w-full py-5">
-            <FiEdit className="h-4 w-4" />
-            <Link href={`/issues/edit/${id}`}>Edit Issue</Link>
-          </Button>
+          <Link className="w-full" href={`/issues/edit/${id}`}>
+            <Button className="w-full py-5">
+              <FiEdit className="h-4 w-4" />
+              Edit Issue
+            </Button>
+          </Link>
           <AlertDialog.Root>
             <AlertDialog.Trigger>
               <Button
