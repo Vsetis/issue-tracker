@@ -20,11 +20,13 @@ const SimpleMDEWithDynamicImport = dynamic(
   },
 );
 
-const items = [
+const statusList = [
   { label: "Open", value: "OPEN" },
   { label: "Closed", value: "CLOSED" },
   { label: "In Progress", value: "IN_PROGRESS" },
 ];
+
+const assignmentList = [{ label: "Unassignment", value: "unassignment" }];
 
 const IssueEditPage = () => {
   const router = useRouter();
@@ -57,6 +59,7 @@ const IssueEditPage = () => {
   const [status, setStatus] = useState<"OPEN" | "IN_PROGRESS" | "CLOSED">(
     issue?.status ?? "OPEN",
   ); // todo get serverside props
+  const [assignment, setAssignment] = useState("unassignment");
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -71,8 +74,8 @@ const IssueEditPage = () => {
   }
 
   return (
-    <div className="flex">
-      <div>
+    <div className="flex justify-between">
+      <div className="w-[70%]">
         {error && (
           <Callout.Root color="red" className="mb-5">
             <Callout.Text>{error}</Callout.Text>
@@ -104,16 +107,31 @@ const IssueEditPage = () => {
             <p className="text-red-500">{errors.description.message}</p>
           )}
           <Button disabled={isSubmitting}>
-            {isSubmitting ? <>Loading...</> : "Save"}
+            {isSubmitting ? <>Loading...</> : "Edit"}
           </Button>
         </form>
       </div>
       <div>
-        <SelectMenu
-          status={status}
-          setStatus={setStatus}
-          items={items}
-        ></SelectMenu>
+        <div className="mb-4">
+          <h2 className="mb-2 font-semibold">Edited</h2>
+          <p>{issue?.udpatedAt.toLocaleDateString()}</p>
+        </div>
+        <div className="mb-4">
+          <h2 className="mb-2 font-semibold">Status</h2>
+          <SelectMenu
+            status={status}
+            setStatus={setStatus}
+            items={statusList}
+          ></SelectMenu>
+        </div>
+        <div>
+          <h2 className="mb-2 font-semibold">Assignment</h2>
+          <SelectMenu
+            state={assignment}
+            setState={setAssignment}
+            items={assignmentList}
+          ></SelectMenu>
+        </div>
       </div>
     </div>
   );

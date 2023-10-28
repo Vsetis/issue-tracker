@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import Tag from "~/components/Tag";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function LoadingSkeleton() {
   return (
@@ -52,7 +54,9 @@ const IssuePage = () => {
                 <p>{issue?.createdAt.toLocaleDateString()}</p>
               </div>
               <div className=" rounded border p-4">
-                <pre>{issue?.description}</pre>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {issue?.description}
+                </ReactMarkdown>
               </div>
             </div>
           )}
