@@ -155,7 +155,7 @@ export async function getServerSideProps(
     },
     transformer: SuperJSON,
   });
-  const id = parseInt(context.params?.id as string);
+  const id = parseInt(context.params!.id, 10);
 
   await helpers.issue.getById.prefetch({ id });
 

@@ -43,14 +43,14 @@ const IssuesPage = () => {
     const queryParams: QueryParams = {};
 
     if (newStatus) {
-      queryParams["status"] = newStatus;
+      queryParams.status = newStatus;
     }
 
     if (newOrder) {
-      queryParams["orderBy"] = newOrder;
+      queryParams.orderBy = newOrder;
     }
 
-    push({
+    void push({
       pathname: "/issues",
       query: queryParams,
     });
@@ -63,8 +63,8 @@ const IssuesPage = () => {
           items={items}
           onValueChange={(newValue) => {
             newValue === "all"
-              ? push("/issues")
-              : push(`issues?status=${newValue}`);
+              ? void push("/issues")
+              : void push(`issues?status=${newValue}`);
           }}
         />
         <Button>
@@ -77,6 +77,7 @@ const IssuesPage = () => {
             <tr className="rounded border-b">
               {tableHeads.map((th) => (
                 <th
+                  key={th.title}
                   onClick={() => filterAndSort(status, th.type)}
                   className="cursor-pointer p-4 text-start"
                 >
