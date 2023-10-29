@@ -47,9 +47,6 @@ export const issueRouter = createTRPCRouter({
       }
 
       switch (input.orderOption) {
-        case "":
-          orderCondition = {};
-          break;
         case "time":
           orderCondition = { createdAt: "desc" };
           break;
@@ -60,6 +57,7 @@ export const issueRouter = createTRPCRouter({
           orderCondition = { status: "asc" };
           break;
         default:
+          orderCondition = { createdAt: "desc" };
           break;
       }
 

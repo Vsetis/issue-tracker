@@ -11,6 +11,11 @@ import { createIssueSchema } from "~/utils/validationScehmas";
 import "easymde/dist/easymde.min.css";
 import SelectMenu from "~/components/RadixUI/SelectMenu";
 import { Status } from "@prisma/client";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { appRouter } from "~/server/api/root";
+import SuperJSON from "superjson";
+import { db } from "~/server/db";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -29,16 +34,19 @@ const statusList = [
 
 const assignmentList = [{ label: "Unassignment", value: "unassignment" }];
 
-const IssueEditPage = () => {
+const IssueEditPage = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) => {
+  const { id } = props;
   const router = useRouter();
-  const id = parseInt(router.query.id as string);
 
   const issueQuery = api.issue.getById.useQuery(
-    { id },
+    { id: id },
     {
       enabled: router.isReady,
     },
   );
+
   const issue = issueQuery.data;
 
   const { mutateAsync: edit } = api.issue.edit.useMutation({
@@ -57,7 +65,7 @@ const IssueEditPage = () => {
 
   const [error, setError] = useState("");
 
-  const [status, setStatus] = useState<Status>(issue?.status ?? "OPEN"); // todo get serverside props
+  const [status, setStatus] = useState<Status>(issue?.status ?? "OPEN");
   const [assignment, setAssignment] = useState("unassignment");
 
   const onSubmit = handleSubmit(async (data) => {
@@ -118,6 +126,7 @@ const IssueEditPage = () => {
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Status</h2>
           <SelectMenu
+            defaultValue={issue?.status}
             items={statusList}
             onValueChange={(newValue) => setStatus(newValue as Status)}
           ></SelectMenu>
@@ -135,3 +144,25 @@ const IssueEditPage = () => {
 };
 
 export default IssueEditPage;
+//SSR
+export async function getServerSideProps(
+  context: GetServerSidePropsContext<{ id: string }>,
+) {
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: {
+      db,
+    },
+    transformer: SuperJSON,
+  });
+  const id = parseInt(context.params?.id as string);
+
+  await helpers.issue.getById.prefetch({ id });
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+      id,
+    },
+  };
+}
