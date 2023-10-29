@@ -1,36 +1,15 @@
-import { Status } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 
 const SelectMenu = ({
-  state,
-  status,
-  setStatus,
-  setState,
   items,
+  onValueChange,
 }: {
-  state?: string;
-  status?: Status;
-  setStatus?: React.Dispatch<React.SetStateAction<Status>>;
-  setState?: React.Dispatch<React.SetStateAction<string>>;
   items: { value: string; label: string }[];
+  onValueChange?: (param: string) => void;
 }) => {
   return (
     <div>
-      <Select.Root
-        defaultValue={state ?? status}
-        onValueChange={(newValue) => {
-          if (setState && typeof newValue === "string") {
-            setState(newValue);
-          } else if (
-            setStatus &&
-            (newValue === "OPEN" ||
-              newValue === "IN_PROGRESS" ||
-              newValue === "CLOSED")
-          ) {
-            setStatus(newValue);
-          }
-        }}
-      >
+      <Select.Root defaultValue={items[0]!.value} onValueChange={onValueChange}>
         <Select.Trigger />
         <Select.Content>
           <Select.Group>

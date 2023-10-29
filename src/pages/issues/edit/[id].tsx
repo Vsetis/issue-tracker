@@ -10,6 +10,7 @@ import { createIssueSchema } from "~/utils/validationScehmas";
 
 import "easymde/dist/easymde.min.css";
 import SelectMenu from "~/components/RadixUI/SelectMenu";
+import { Status } from "@prisma/client";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -56,9 +57,7 @@ const IssueEditPage = () => {
 
   const [error, setError] = useState("");
 
-  const [status, setStatus] = useState<"OPEN" | "IN_PROGRESS" | "CLOSED">(
-    issue?.status ?? "OPEN",
-  ); // todo get serverside props
+  const [status, setStatus] = useState<Status>(issue?.status ?? "OPEN"); // todo get serverside props
   const [assignment, setAssignment] = useState("unassignment");
 
   const onSubmit = handleSubmit(async (data) => {
@@ -119,17 +118,15 @@ const IssueEditPage = () => {
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Status</h2>
           <SelectMenu
-            status={status}
-            setStatus={setStatus}
             items={statusList}
+            onValueChange={(newValue) => setStatus(newValue as Status)}
           ></SelectMenu>
         </div>
         <div>
           <h2 className="mb-2 font-semibold">Assignment</h2>
           <SelectMenu
-            state={assignment}
-            setState={setAssignment}
             items={assignmentList}
+            onValueChange={(newValue) => setAssignment(newValue)}
           ></SelectMenu>
         </div>
       </div>

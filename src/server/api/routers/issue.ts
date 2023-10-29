@@ -32,27 +32,24 @@ export const issueRouter = createTRPCRouter({
   }),
 
   getAll: publicProcedure
-    .input(z.object({ status: z.any(), orderOption: z.string() }))
+    .input(
+      z.object({
+        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
+        orderOption: z.any(),
+      }),
+    )
     .query(({ ctx, input }) => {
-      let whereCondition = {};
       let orderCondition = {};
+      let statusCondition = {};
 
-      switch (input.status) {
-        case "all":
-          break;
-        case "open":
-          whereCondition = { status: "OPEN" };
-          break;
-        case "closed":
-          whereCondition = { status: "CLOSED" };
-          break;
-        case "progress":
-          whereCondition = { status: "IN_PROGRESS" };
-        default:
-          break;
+      if (input.status) {
+        statusCondition = { status: input.status };
       }
 
       switch (input.orderOption) {
+        case "":
+          orderCondition = {};
+          break;
         case "time":
           orderCondition = { createdAt: "desc" };
           break;
@@ -65,10 +62,9 @@ export const issueRouter = createTRPCRouter({
         default:
           break;
       }
-      console.log(orderCondition);
 
       return ctx.db.issue.findMany({
-        where: whereCondition,
+        where: statusCondition,
         orderBy: orderCondition,
       });
     }),
