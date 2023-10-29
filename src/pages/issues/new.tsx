@@ -11,12 +11,9 @@ import dynamic from "next/dynamic";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
-const SimpleMDEWithDynamicImport = dynamic(
-  () => import("react-simplemde-editor"),
-  {
-    ssr: false,
-  },
-);
+const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false, // This disables server-side rendering for the component
+});
 
 const NewIssuePage = () => {
   const { mutateAsync: createIssue } = api.issue.create.useMutation({});
@@ -38,6 +35,8 @@ const NewIssuePage = () => {
     }
   });
 
+  const [value, setValue] = useState("");
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -50,11 +49,16 @@ const NewIssuePage = () => {
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
         {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+        <p>{}</p>
         <Controller
           name="description"
           control={control}
           render={({ field }) => (
-            <SimpleMDEWithDynamicImport placeholder="Description" {...field} />
+            <SimpleMdeReact
+              className="editor"
+              placeholder="Description"
+              {...field}
+            />
           )}
         />
         {errors.description && (
