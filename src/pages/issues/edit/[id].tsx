@@ -32,8 +32,6 @@ const statusList = [
   { label: "In Progress", value: "IN_PROGRESS" },
 ];
 
-const assignmentList = [{ label: "Unassignment", value: "unassignment" }];
-
 const IssueEditPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
@@ -66,7 +64,6 @@ const IssueEditPage = (
   const [error, setError] = useState("");
 
   const [status, setStatus] = useState<Status>(issue?.status ?? "OPEN");
-  const [assignment, setAssignment] = useState("unassignment");
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -130,13 +127,6 @@ const IssueEditPage = (
             defaultValue={issue?.status}
             items={statusList}
             onValueChange={(newValue) => setStatus(newValue as Status)}
-          ></SelectMenu>
-        </div>
-        <div>
-          <h2 className="mb-2 font-semibold">Assignment</h2>
-          <SelectMenu
-            items={assignmentList}
-            onValueChange={(newValue) => setAssignment(newValue)}
           ></SelectMenu>
         </div>
       </div>
