@@ -31,17 +31,17 @@ export default function Home() {
   return (
     <main className="py-8">
       <div className="flex flex-col gap-14 lg:flex-row">
-        <div className="min-w-[50%]">
-          <div className="mb-8 flex gap-8">
+        <div className="w-full md:min-w-[50%]">
+          <div className="mb-8 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-8">
             {data.map((issue, i) => (
-              <div key={i} className="min-w-[150px] rounded border p-4">
+              <div key={i} className="w-full rounded border p-4">
                 <p>{issue.status}</p>
                 <p className="font-semibold">{issue.count}</p>
               </div>
             ))}
           </div>
-          <div className="rounded border p-4">
-            <ResponsiveContainer width="100%" height={500}>
+          <div className="h-[350px] rounded border p-4 md:h-[500px]">
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data}>
                 <YAxis />
                 <XAxis dataKey="status" />
