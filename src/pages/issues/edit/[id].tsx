@@ -81,8 +81,8 @@ const IssueEditPage = (
   }
 
   return (
-    <div className="flex justify-between">
-      <div className="w-[70%]">
+    <div className="flex flex-col justify-between md:flex-row">
+      <div className="order-2 w-full md:order-1 md:w-[70%]">
         {error && (
           <Callout.Root color="red" className="mb-5">
             <Callout.Text>{error}</Callout.Text>
@@ -91,6 +91,7 @@ const IssueEditPage = (
         <form className="space-y-3" onSubmit={onSubmit}>
           <TextField.Root>
             <TextField.Input
+              className="px-4 py-6 text-lg font-semibold"
               defaultValue={issue?.title}
               placeholder="Title"
               {...register("title")}
@@ -113,12 +114,12 @@ const IssueEditPage = (
           {errors.description && (
             <p className="text-red-500">{errors.description.message}</p>
           )}
-          <Button disabled={isSubmitting}>
+          <Button className="cursor-pointer px-8" disabled={isSubmitting}>
             {isSubmitting ? <>Loading...</> : "Edit"}
           </Button>
         </form>
       </div>
-      <div>
+      <div className="order-1 mb-6 flex gap-8  border-b border-black/50 pb-2 md:order-2 md:flex-col md:gap-0 md:border-none">
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Edited</h2>
           <p>{issue?.udpatedAt.toLocaleDateString()}</p>

@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <main className="py-8">
-      <div className="flex gap-14">
+      <div className="flex flex-col gap-14 lg:flex-row">
         <div className="min-w-[50%]">
           <div className="mb-8 flex gap-8">
             {data.map((issue, i) => (

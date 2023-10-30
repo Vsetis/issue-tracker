@@ -48,63 +48,69 @@ const IssuePage = () => {
             <LoadingSkeleton />
           ) : (
             <div>
-              <h1 className="mb-2 text-3xl font-semibold">{issue?.title}</h1>
-              <div className="mb-4 flex items-center gap-4">
-                <Tag>{issue?.status}</Tag>
-                <p>{issue?.createdAt.toLocaleDateString()}</p>
+              <div className="mb-8 flex justify-between">
+                <div>
+                  <h1 className="mb-2 text-3xl font-semibold">
+                    {issue?.title}
+                  </h1>
+                  <div className="mb-4 flex items-center gap-4">
+                    <Tag>{issue?.status}</Tag>
+                    <p>{issue?.createdAt.toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className=" flex min-w-[200px] max-w-[300px] flex-col gap-2">
+                  <Link className="w-full" href={`/issues/edit/${id}`}>
+                    <Button className="w-full cursor-pointer py-5">
+                      <FiEdit className="h-4 w-4" />
+                      Edit Issue
+                    </Button>
+                  </Link>
+                  <AlertDialog.Root>
+                    <AlertDialog.Trigger>
+                      <Button
+                        color="red"
+                        className="w-full cursor-pointer bg-red-500 py-5 transition-all hover:bg-red-600"
+                      >
+                        Delete Issue
+                      </Button>
+                    </AlertDialog.Trigger>
+                    <AlertDialog.Content style={{ maxWidth: 450 }}>
+                      <AlertDialog.Title>Delete Issue</AlertDialog.Title>
+                      <AlertDialog.Description size="2">
+                        Are you sure you want to delete this issue? This action
+                        cannot be undone.
+                      </AlertDialog.Description>
+
+                      <Flex gap="3" mt="4" justify="end">
+                        <AlertDialog.Cancel>
+                          <Button
+                            variant="soft"
+                            color="gray"
+                            className="bg-gray-200 transition-all hover:bg-gray-300"
+                          >
+                            Cancel
+                          </Button>
+                        </AlertDialog.Cancel>
+                        <AlertDialog.Action>
+                          <Button
+                            onClick={() => deleteIssue({ id })}
+                            className="trnasition-all bg-red-500 hover:bg-red-600"
+                          >
+                            Delete Issue
+                          </Button>
+                        </AlertDialog.Action>
+                      </Flex>
+                    </AlertDialog.Content>
+                  </AlertDialog.Root>
+                </div>
               </div>
-              <div className=" rounded border p-4">
+              <div className=" w-full rounded border p-4 lg:w-[70%]">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {issue?.description}
                 </ReactMarkdown>
               </div>
             </div>
           )}
-        </div>
-        <div className=" flex min-w-[200px] max-w-[300px] flex-col gap-4">
-          <Link className="w-full" href={`/issues/edit/${id}`}>
-            <Button className="w-full py-5">
-              <FiEdit className="h-4 w-4" />
-              Edit Issue
-            </Button>
-          </Link>
-          <AlertDialog.Root>
-            <AlertDialog.Trigger>
-              <Button
-                color="red"
-                className="w-full bg-red-500 py-5 transition-all hover:bg-red-600"
-              >
-                Delete Issue
-              </Button>
-            </AlertDialog.Trigger>
-            <AlertDialog.Content style={{ maxWidth: 450 }}>
-              <AlertDialog.Title>Delete Issue</AlertDialog.Title>
-              <AlertDialog.Description size="2">
-                Are you sure you want to delete this issue? This action cannot
-                be undone.
-              </AlertDialog.Description>
-
-              <Flex gap="3" mt="4" justify="end">
-                <AlertDialog.Cancel>
-                  <Button
-                    variant="soft"
-                    color="gray"
-                    className="bg-gray-200 transition-all hover:bg-gray-300"
-                  >
-                    Cancel
-                  </Button>
-                </AlertDialog.Cancel>
-                <AlertDialog.Action>
-                  <Button
-                    onClick={() => deleteIssue({ id })}
-                    className="trnasition-all bg-red-500 hover:bg-red-600"
-                  >
-                    Delete Issue
-                  </Button>
-                </AlertDialog.Action>
-              </Flex>
-            </AlertDialog.Content>
-          </AlertDialog.Root>
         </div>
       </div>
     </main>
