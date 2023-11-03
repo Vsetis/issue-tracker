@@ -119,7 +119,7 @@ const IssueEditPage = (
       <div className="order-1 mb-6 flex gap-8  border-b border-black/50 pb-2 md:order-2 md:flex-col md:gap-0 md:border-none">
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Edited</h2>
-          <p>{issue?.udpatedAt.toLocaleDateString()}</p>
+          <p>{issue?.updatedAt.toLocaleDateString()}</p>
         </div>
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Status</h2>
