@@ -1,4 +1,4 @@
-import { Button, Select } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import Link from "next/link";
 import Tag from "~/components/Tag";
 import { api } from "~/utils/api";
@@ -6,6 +6,12 @@ import { GoArrowUp } from "react-icons/go";
 import { useRouter } from "next/router";
 import { Status } from "@prisma/client";
 import SelectMenu from "~/components/RadixUI/SelectMenu";
+
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { appRouter } from "~/server/api/root";
+import { db } from "~/server/db";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import SuperJSON from "superjson";
 
 type QueryParams = {
   status?: Status;
@@ -25,11 +31,11 @@ const tableHeads = [
   { title: "Created", type: "time" },
 ];
 
-const IssuesPage = () => {
+const IssuesPage = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) => {
+  const { status, orderOption } = props;
   const { push, query } = useRouter();
-
-  const status = query.status as undefined | Status;
-  const orderOption = query.orderBy;
 
   const { data: issueQuery } = api.issue.getAll.useQuery({
     status,
@@ -115,3 +121,27 @@ const IssuesPage = () => {
 };
 
 export default IssuesPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { query } = context;
+  const orderOption = query.orderBy ?? null;
+  const status: Status | undefined = (query.status as Status) ?? null;
+
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: {
+      db,
+    },
+    transformer: SuperJSON,
+  });
+
+  await helpers.issue.getAll.prefetch({ status, orderOption });
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+      status,
+      orderOption,
+    },
+  };
+}
