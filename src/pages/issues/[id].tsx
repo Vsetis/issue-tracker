@@ -48,8 +48,8 @@ const IssuePage = () => {
             <LoadingSkeleton />
           ) : (
             <div>
-              <div className="mb-8 flex justify-between">
-                <div>
+              <div className="mb-8 flex flex-col justify-between gap-8 md:flex-row">
+                <div className="w-full ">
                   <h1 className="mb-2 text-3xl font-semibold">
                     {issue?.title}
                   </h1>
@@ -57,8 +57,13 @@ const IssuePage = () => {
                     <Tag>{issue?.status}</Tag>
                     <p>{issue?.createdAt.toLocaleDateString()}</p>
                   </div>
+                  <div className=" w-full rounded border p-4 lg:w-[70%]">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {issue?.description}
+                    </ReactMarkdown>
+                  </div>
                 </div>
-                <div className=" flex min-w-[200px] max-w-[300px] flex-col gap-2">
+                <div className=" flex w-full flex-col gap-2 md:max-w-[200px]">
                   <Link className="w-full" href={`/issues/edit/${id}`}>
                     <Button className="w-full cursor-pointer py-5">
                       <FiEdit className="h-4 w-4" />
@@ -94,7 +99,7 @@ const IssuePage = () => {
                         <AlertDialog.Action>
                           <Button
                             onClick={() => deleteIssue({ id })}
-                            className="trnasition-all bg-red-500 hover:bg-red-600"
+                            className="trnasition-all w-max bg-red-500 hover:bg-red-600"
                           >
                             Delete Issue
                           </Button>
@@ -103,11 +108,6 @@ const IssuePage = () => {
                     </AlertDialog.Content>
                   </AlertDialog.Root>
                 </div>
-              </div>
-              <div className=" w-full rounded border p-4 lg:w-[70%]">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {issue?.description}
-                </ReactMarkdown>
               </div>
             </div>
           )}
