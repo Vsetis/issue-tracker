@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,30 +11,35 @@ import Tag from "~/components/Tag";
 
 import { api } from "~/utils/api";
 
+const colors = ["#f87171", "#fb923c", "#4ade80"];
+
 export default function Home() {
   const latestIssues = api.issue.getLatest.useQuery();
-  const issueData = latestIssues.data?.map((issue) => issue);
+  const issueData = latestIssues.data;
 
-  const countOpen = issueData?.filter((i) => i.status === "OPEN");
-  const countInProgress = issueData?.filter((i) => i.status === "IN_PROGRESS");
-  const countClosed = issueData?.filter((i) => i.status === "CLOSED");
+  const data = useMemo(() => {
+    const open = issueData?.filter((i) => i.status === "OPEN");
+    const progress = issueData?.filter((i) => i.status === "IN_PROGRESS");
+    const closed = issueData?.filter((i) => i.status === "CLOSED");
 
-  const colors = ["#f87171", "#fb923c", "#4ade80"];
-  const data = [
-    { status: "OPEN", count: countOpen?.length ?? 0 },
-    {
-      status: "IN PROGRESS",
-      count: countInProgress?.length ?? 0,
-    },
-    { status: "CLOSED", count: countClosed?.length ?? 0 },
-  ];
+    return {
+      data: [
+        { status: "OPEN", count: open?.length ?? 0 },
+        {
+          status: "IN PROGRESS",
+          count: progress?.length ?? 0,
+        },
+        { status: "CLOSED", count: closed?.length ?? 0 },
+      ],
+    };
+  }, []);
 
   return (
     <main className="py-8">
       <div className="flex flex-col gap-14 lg:flex-row">
         <div className="w-full md:min-w-[50%]">
           <div className="mb-8 grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-8">
-            {data.map((issue, i) => (
+            {data.data.map((issue, i) => (
               <div key={i} className="w-full rounded border p-4">
                 <p>{issue.status}</p>
                 <p className="font-semibold">{issue.count}</p>
@@ -42,7 +48,7 @@ export default function Home() {
           </div>
           <div className="h-[350px] rounded border p-4 md:h-[500px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={data.data}>
                 <YAxis />
                 <XAxis dataKey="status" />
                 <Bar
@@ -51,7 +57,7 @@ export default function Home() {
                   className="relative"
                   fill="#15803d"
                 >
-                  {data.map((_, i) => (
+                  {data.data.map((_, i) => (
                     <Cell key={i} fill={colors[i]} />
                   ))}
                 </Bar>
