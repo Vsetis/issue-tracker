@@ -32,7 +32,7 @@ export default function Home() {
         { status: "CLOSED", count: closed?.length ?? 0 },
       ],
     };
-  }, []);
+  }, [issueData]);
 
   return (
     <main className="py-8">
