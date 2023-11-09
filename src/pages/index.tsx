@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import {
-  ResponsiveContainer,
-  BarChart,
   Bar,
+  BarChart,
+  Cell,
+  ResponsiveContainer,
   XAxis,
   YAxis,
-  Cell,
 } from "recharts";
 import Tag from "~/components/Tag";
 
@@ -14,13 +14,12 @@ import { api } from "~/utils/api";
 const colors = ["#f87171", "#fb923c", "#4ade80"];
 
 export default function Home() {
-  const latestIssues = api.issue.getLatest.useQuery();
-  const issueData = latestIssues.data;
+  const { data: issuesData } = api.issue.getLatest.useQuery();
 
   const data = useMemo(() => {
-    const open = issueData?.filter((i) => i.status === "OPEN");
-    const progress = issueData?.filter((i) => i.status === "IN_PROGRESS");
-    const closed = issueData?.filter((i) => i.status === "CLOSED");
+    const open = issuesData?.filter((i) => i.status === "OPEN");
+    const progress = issuesData?.filter((i) => i.status === "IN_PROGRESS");
+    const closed = issuesData?.filter((i) => i.status === "CLOSED");
 
     return {
       data: [
@@ -32,7 +31,7 @@ export default function Home() {
         { status: "CLOSED", count: closed?.length ?? 0 },
       ],
     };
-  }, [issueData]);
+  }, [issuesData]);
 
   return (
     <main className="py-8">
@@ -68,8 +67,8 @@ export default function Home() {
         <div className="w-full rounded border  p-4">
           <h1 className="mb-4 text-xl font-semibold">Latest Issues</h1>
           <div className="flex flex-col">
-            {issueData ? (
-              issueData.map((issue) => (
+            {issuesData ? (
+              issuesData.map((issue) => (
                 <div
                   key={issue.id}
                   className="mb-4 border-b px-5 pb-4 last:border-none"

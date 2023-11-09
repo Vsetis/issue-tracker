@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import "easymde/dist/easymde.min.css";
-import { useForm, Controller } from "react-hook-form";
-import { createIssueSchema } from "~/utils/validationScehmas";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/router";
-import { api } from "~/utils/api";
 import { Button, Callout, TextField } from "@radix-ui/themes";
+import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import type { z } from "zod";
+import { api } from "~/utils/api";
+import { createIssueSchema } from "~/utils/schemas";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -18,12 +18,14 @@ const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
 const NewIssuePage = () => {
   const { mutateAsync: createIssue } = api.issue.create.useMutation({});
   const { push } = useRouter();
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<IssueForm>({ resolver: zodResolver(createIssueSchema) });
+
   const [error, setError] = useState("");
 
   const onSubmit = handleSubmit(async (data) => {
@@ -34,8 +36,6 @@ const NewIssuePage = () => {
       setError("An unexpeced error occured.");
     }
   });
-
-  const [value, setValue] = useState("");
 
   return (
     <div className="max-w-xl">

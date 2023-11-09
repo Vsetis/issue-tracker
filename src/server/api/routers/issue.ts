@@ -2,6 +2,7 @@ import { Status } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { getOrderOption } from "~/utils";
 
 export const issueRouter = createTRPCRouter({
   create: publicProcedure
@@ -12,8 +13,6 @@ export const issueRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       return ctx.db.issue.create({
         data: {
           title: input.title,
@@ -34,36 +33,14 @@ export const issueRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
-        orderOption: z.any(),
+        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).optional(),
+        orderOption: z.string().optional(),
       }),
     )
     .query(({ ctx, input }) => {
-      let orderCondition = {};
-      let statusCondition = {};
-
-      if (input.status) {
-        statusCondition = { status: input.status };
-      }
-
-      switch (input.orderOption) {
-        case "time":
-          orderCondition = { createdAt: "desc" };
-          break;
-        case "title":
-          orderCondition = { title: "asc" };
-          break;
-        case "status":
-          orderCondition = { status: "asc" };
-          break;
-        default:
-          orderCondition = { createdAt: "desc" };
-          break;
-      }
-
       return ctx.db.issue.findMany({
-        where: statusCondition,
-        orderBy: orderCondition,
+        where: { ...(input.status && { status: input.status }) },
+        orderBy: getOrderOption(input.orderOption),
       });
     }),
 
@@ -97,15 +74,12 @@ export const issueRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const { id, title, description, status } = input;
-
       const updatedIssue = ctx.db.issue.update({
-        where: { id },
+        where: { id: input.id },
         data: {
-          title,
-          description,
-          status,
+          title: input.title,
+          description: input.description,
+          status: input.status,
         },
       });
 
