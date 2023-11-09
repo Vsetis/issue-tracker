@@ -4,14 +4,17 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { api } from "~/utils/api";
 import { createIssueSchema } from "~/utils/validationScehmas";
 
-import { Status } from "@prisma/client";
+import type { Status } from "@prisma/client";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import "easymde/dist/easymde.min.css";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import SuperJSON from "superjson";
 import SelectMenu from "~/components/RadixUI/SelectMenu";
 import { appRouter } from "~/server/api/root";
