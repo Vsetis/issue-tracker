@@ -127,7 +127,8 @@ export default IssuesPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { query } = context;
-  const orderOption = query.orderBy ?? null;
+
+  const orderOption = query.orderBy ? (query.orderBy as string) : undefined;
   const status: Status | undefined = (query.status as Status) ?? null;
 
   const helpers = createServerSideHelpers({

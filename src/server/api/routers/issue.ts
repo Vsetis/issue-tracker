@@ -3,7 +3,6 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { getOrderOption } from "~/utils";
-import { orderOptionSchema } from "~/utils/schemas";
 
 export const issueRouter = createTRPCRouter({
   create: publicProcedure
@@ -35,7 +34,7 @@ export const issueRouter = createTRPCRouter({
     .input(
       z.object({
         status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).optional(),
-        orderOption: orderOptionSchema,
+        orderOption: z.string().optional(),
       }),
     )
     .query(({ ctx, input }) => {

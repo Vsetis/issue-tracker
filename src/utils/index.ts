@@ -1,9 +1,4 @@
-import { z } from "zod";
-import { orderOptionSchema } from "./schemas";
-
-type OrderOption = z.infer<typeof orderOptionSchema>;
-
-export function getOrderOption(orderOption: OrderOption): Partial<{
+export function getOrderOption(orderOption?: string): Partial<{
   [key in "createdAt" | "title" | "status"]: "asc" | "desc";
 }> {
   switch (orderOption) {
