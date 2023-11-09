@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 import { api } from "~/utils/api";
-import { createIssueSchema } from "~/utils/validationScehmas";
+import { createIssueSchema } from "~/utils/schemas";
 
 import type { Status } from "@prisma/client";
 import { createServerSideHelpers } from "@trpc/react-query/server";
@@ -41,14 +41,13 @@ const IssueEditPage = (
   const { id } = props;
   const router = useRouter();
 
-  const issueQuery = api.issue.getById.useQuery(
-    { id: id },
-    {
-      enabled: router.isReady,
-    },
-  );
-
-  const issue = issueQuery.data;
+  const { data: issueData, isLoading: issueLoading } =
+    api.issue.getById.useQuery(
+      { id: id },
+      {
+        enabled: router.isReady,
+      },
+    );
 
   const { mutateAsync: edit } = api.issue.edit.useMutation({
     onSuccess: () => {
@@ -57,6 +56,7 @@ const IssueEditPage = (
   });
 
   const { push } = useRouter();
+
   const {
     register,
     control,
@@ -66,7 +66,7 @@ const IssueEditPage = (
 
   const [error, setError] = useState("");
 
-  const [status, setStatus] = useState<Status>(issue?.status ?? "OPEN");
+  const [status, setStatus] = useState<Status>(issueData?.status ?? "OPEN");
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -76,7 +76,8 @@ const IssueEditPage = (
       setError("An unexpeced error occured.");
     }
   });
-  if (!issueQuery.isLoading && !issueQuery.data) {
+
+  if (!issueLoading && !issueData) {
     return <>404 Issue not found</>;
   }
 
@@ -92,7 +93,7 @@ const IssueEditPage = (
           <TextField.Root>
             <TextField.Input
               className="px-4 py-6 text-lg font-semibold"
-              defaultValue={issue?.title}
+              defaultValue={issueData?.title}
               placeholder="Title"
               {...register("title")}
             />
@@ -103,7 +104,7 @@ const IssueEditPage = (
           <Controller
             name="description"
             control={control}
-            defaultValue={issue?.description}
+            defaultValue={issueData?.description}
             render={({ field }) => (
               <SimpleMDEWithDynamicImport
                 placeholder="Description"
@@ -122,12 +123,12 @@ const IssueEditPage = (
       <div className="order-1 mb-6 flex gap-8  border-b border-black/50 pb-2 md:order-2 md:flex-col md:gap-0 md:border-none">
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Edited</h2>
-          <p>{issue?.updatedAt.toLocaleDateString()}</p>
+          <p>{issueData?.updatedAt.toLocaleDateString()}</p>
         </div>
         <div className="mb-4">
           <h2 className="mb-2 font-semibold">Status</h2>
           <SelectMenu
-            defaultValue={issue?.status}
+            defaultValue={issueData?.status}
             items={statusList}
             onValueChange={(newValue) => setStatus(newValue as Status)}
           ></SelectMenu>

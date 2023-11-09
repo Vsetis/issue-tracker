@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { z } from "zod";
 import { api } from "~/utils/api";
-import { createIssueSchema } from "~/utils/validationScehmas";
+import { createIssueSchema } from "~/utils/schemas";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -18,12 +18,14 @@ const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
 const NewIssuePage = () => {
   const { mutateAsync: createIssue } = api.issue.create.useMutation({});
   const { push } = useRouter();
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<IssueForm>({ resolver: zodResolver(createIssueSchema) });
+
   const [error, setError] = useState("");
 
   const onSubmit = handleSubmit(async (data) => {

@@ -1,11 +1,11 @@
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
-import { FiEdit } from "react-icons/fi";
-import { useRouter } from "next/router";
-import Tag from "~/components/Tag";
-import { api } from "~/utils/api";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { FiEdit } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Tag from "~/components/Tag";
+import { api } from "~/utils/api";
 
 function LoadingSkeleton() {
   return (
@@ -25,18 +25,16 @@ const IssuePage = () => {
   const router = useRouter();
   const id = parseInt(router.query.id as string);
 
-  const issueQuery = api.issue.getById.useQuery(
-    { id },
-    { enabled: router.isReady },
-  );
+  const { data: issueData, isLoading: issueLoading } =
+    api.issue.getById.useQuery({ id }, { enabled: router.isReady });
+
   const { mutate: deleteIssue } = api.issue.delete.useMutation({
     onSuccess: () => {
       void router.push("/issues");
     },
   });
-  const issue = issueQuery.data;
 
-  if (!issueQuery.isLoading && !issueQuery.data) {
+  if (!issueLoading && !issueData) {
     return <>404 Issue not found</>;
   }
 
@@ -44,22 +42,22 @@ const IssuePage = () => {
     <main>
       <div className="flex justify-between gap-16">
         <div className="w-full">
-          {issueQuery.isLoading ? (
+          {issueLoading ? (
             <LoadingSkeleton />
           ) : (
             <div>
               <div className="mb-8 flex flex-col justify-between gap-8 md:flex-row">
                 <div className="w-full ">
                   <h1 className="mb-2 text-3xl font-semibold">
-                    {issue?.title}
+                    {issueData?.title}
                   </h1>
                   <div className="mb-4 flex items-center gap-4">
-                    <Tag>{issue?.status}</Tag>
-                    <p>{issue?.createdAt.toLocaleDateString()}</p>
+                    <Tag>{issueData?.status}</Tag>
+                    <p>{issueData?.createdAt.toLocaleDateString()}</p>
                   </div>
                   <div className=" w-full rounded border p-4 lg:w-[70%]">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {issue?.description}
+                      {issueData?.description}
                     </ReactMarkdown>
                   </div>
                 </div>
