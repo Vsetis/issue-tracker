@@ -2,25 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background: white !important;
+body {
+  background: white !important;
 }
 
 @layer base {
-    h1 {
+  h1 {
     @apply text-2xl;
-    }
-    h2 {
+  }
+  h2 {
     @apply text-xl;
-    }
-    ul{
-        @apply list-disc px-10;
-    }
-    ol{
-        @apply list-decimal px-10;
-    }
-    blockquote{
-        @apply  border-l-4 border-gray-200 pl-2 py-2;
-    }
+  }
+  ul {
+    @apply list-disc px-10;
+  }
+  ol {
+    @apply list-decimal px-10;
+  }
+  blockquote {
+    @apply border-l-4 border-gray-200 py-2 pl-2;
+  }
 }
-
