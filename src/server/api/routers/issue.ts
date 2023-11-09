@@ -2,6 +2,8 @@ import { Status } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { getOrderOption } from "~/utils";
+import { orderOptionSchema } from "~/utils/schemas";
 
 export const issueRouter = createTRPCRouter({
   create: publicProcedure
@@ -32,36 +34,14 @@ export const issueRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
-        orderOption: z.any(), // fixme: check this
+        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).optional(),
+        orderOption: orderOptionSchema,
       }),
     )
     .query(({ ctx, input }) => {
-      let orderCondition = {};
-      let statusCondition = {};
-
-      if (input.status) {
-        statusCondition = { status: input.status };
-      }
-
-      switch (input.orderOption) {
-        case "time":
-          orderCondition = { createdAt: "desc" };
-          break;
-        case "title":
-          orderCondition = { title: "asc" };
-          break;
-        case "status":
-          orderCondition = { status: "asc" };
-          break;
-        default:
-          orderCondition = { createdAt: "desc" };
-          break;
-      }
-
       return ctx.db.issue.findMany({
-        where: statusCondition,
-        orderBy: orderCondition,
+        where: { ...(input.status && { status: input.status }) },
+        orderBy: getOrderOption(input.orderOption),
       });
     }),
 
