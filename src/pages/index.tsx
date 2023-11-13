@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
@@ -70,9 +71,14 @@ export default function Home() {
               issuesData.map((issue) => (
                 <div
                   key={issue.id}
-                  className="mb-4 border-b px-5 pb-4 last:border-none"
+                  className="mb-4 flex flex-col gap-1 border-b px-5 pb-4 last:border-none"
                 >
-                  <h3 className="mb-1">{issue.title}</h3>
+                  <Link
+                    className="hover:underline"
+                    href={`/issues/${issue.id}`}
+                  >
+                    {issue.title}
+                  </Link>
                   <Tag>{issue.status}</Tag>
                 </div>
               ))
