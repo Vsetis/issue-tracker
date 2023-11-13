@@ -45,14 +45,14 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div className="h-[350px] rounded border p-4 md:h-[500px]">
+          <div className="h-[300px] rounded border md:h-[500px] md:p-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.data}>
                 <YAxis />
                 <XAxis dataKey="status" />
                 <Bar
                   dataKey="count"
-                  barSize={80}
+                  barSize={65}
                   className="relative"
                   fill="#15803d"
                 >
