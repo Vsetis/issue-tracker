@@ -12,8 +12,6 @@ export const issueRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
       return ctx.db.issue.create({
         data: {
           title: input.title,
@@ -35,7 +33,7 @@ export const issueRouter = createTRPCRouter({
     .input(
       z.object({
         status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
-        orderOption: z.any(),
+        orderOption: z.any(), //check this
       }),
     )
     .query(({ ctx, input }) => {
@@ -97,15 +95,12 @@ export const issueRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const { id, title, description, status } = input;
-
       const updatedIssue = ctx.db.issue.update({
-        where: { id },
+        where: { id: input.id },
         data: {
-          title,
-          description,
-          status,
+          title: input.title,
+          description: input.description,
+          status: input.status,
         },
       });
 

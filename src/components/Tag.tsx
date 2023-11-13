@@ -1,5 +1,6 @@
 const Tag = ({ children }: { children: React.ReactNode }) => {
   const status = children;
+
   return (
     <p
       className={`${
