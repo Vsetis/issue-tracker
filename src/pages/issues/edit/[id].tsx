@@ -31,8 +31,8 @@ const SimpleMDEWithDynamicImport = dynamic(
 
 const statusList = [
   { label: "Open", value: "OPEN" },
-  { label: "Closed", value: "CLOSED" },
   { label: "In Progress", value: "IN_PROGRESS" },
+  { label: "Closed", value: "CLOSED" },
 ];
 
 const IssueEditPage = (

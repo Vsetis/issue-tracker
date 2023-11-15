@@ -12,10 +12,12 @@ import { appRouter } from "~/server/api/root";
 import { db } from "~/server/db";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import SuperJSON from "superjson";
+import Pagination from "~/components/Pagination";
 
 type QueryParams = {
   status?: Status;
   orderBy?: string;
+  page?: number;
 };
 
 const items = [
@@ -34,12 +36,17 @@ const tableHeads = [
 const IssuesPage = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
 ) => {
-  const { status, orderOption } = props;
+  const { status, orderOption, page } = props;
   const { push, query } = useRouter();
 
-  const { data: issueQuery } = api.issue.getAll.useQuery({
+  const { data: issueLength } = api.issue.getLength.useQuery({
+    status,
+  });
+
+  const { data: paginatedIssues } = api.issue.paginated.useQuery({
     status,
     orderOption,
+    page,
   });
 
   function filterAndSort(
@@ -59,6 +66,13 @@ const IssuesPage = (
     void push({
       pathname: "/issues",
       query: queryParams,
+    });
+  }
+
+  function onPageChange(newPage: number) {
+    void push({
+      pathname: "/issues",
+      query: { ...query, page: newPage },
     });
   }
 
@@ -98,7 +112,7 @@ const IssuesPage = (
             </tr>
           </thead>
           <tbody>
-            {issueQuery?.map((issue) => (
+            {paginatedIssues?.map((issue) => (
               <tr
                 onClick={() => push(`/issues/${issue.id}`)}
                 key={issue.id}
@@ -116,6 +130,14 @@ const IssuesPage = (
           </tbody>
         </table>
       </div>
+      {issueLength && (
+        <Pagination
+          currentPage={page}
+          lastPage={Math.ceil(issueLength.length / 10)}
+          totalPages={Math.ceil(issueLength.length / 10)}
+          onPageChange={onPageChange}
+        />
+      )}
     </main>
   );
 };
@@ -125,6 +147,7 @@ export default IssuesPage;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { query } = context;
   const orderOption = query.orderBy ?? null;
+  const page: number = parseInt(query.page as string, 10) || 1;
   const status: Status | undefined = (query.status as Status) ?? null;
 
   const helpers = createServerSideHelpers({
@@ -135,13 +158,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     transformer: SuperJSON,
   });
 
-  await helpers.issue.getAll.prefetch({ status, orderOption });
+  await helpers.issue.paginated.prefetch({ status, orderOption, page });
 
   return {
     props: {
       trpcState: helpers.dehydrate(),
       status,
       orderOption,
+      page,
     },
   };
 }

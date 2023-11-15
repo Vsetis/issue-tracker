@@ -3,7 +3,7 @@ import { Button, Callout, TextField } from "@radix-ui/themes";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { api } from "~/utils/api";
@@ -12,7 +12,7 @@ import { createIssueSchema } from "~/utils/validationScehmas";
 type IssueForm = z.infer<typeof createIssueSchema>;
 
 const SimpleMdeReact = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false, // This disables server-side rendering for the component
+  ssr: false,
 });
 
 const NewIssuePage = () => {
@@ -27,6 +27,7 @@ const NewIssuePage = () => {
   } = useForm<IssueForm>({ resolver: zodResolver(createIssueSchema) });
 
   const [error, setError] = useState("");
+  const simpleMdeRef = useRef(null);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -49,7 +50,6 @@ const NewIssuePage = () => {
           <TextField.Input placeholder="Title" {...register("title")} />
         </TextField.Root>
         {errors.title && <p className="text-red-500">{errors.title.message}</p>}
-        <p>{}</p>
         <Controller
           name="description"
           control={control}
@@ -58,6 +58,7 @@ const NewIssuePage = () => {
               className="editor"
               placeholder="Description"
               {...field}
+              ref={simpleMdeRef}
             />
           )}
         />

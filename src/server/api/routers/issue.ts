@@ -4,6 +4,12 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const issueRouter = createTRPCRouter({
+  deleteAll: publicProcedure.mutation(async ({ ctx }) => {
+    const deletedCount = await ctx.db.issue.deleteMany();
+
+    return { deletedCount };
+  }),
+
   create: publicProcedure
     .input(
       z.object({
@@ -22,18 +28,45 @@ export const issueRouter = createTRPCRouter({
 
   getLatest: publicProcedure.query(({ ctx }) => {
     return ctx.db.issue.findMany({
-      take: 10,
+      take: 7,
       orderBy: {
         createdAt: "desc",
       },
     });
   }),
 
-  getAll: publicProcedure
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.db.issue.findMany();
+  }),
+
+  getLength: publicProcedure
+    .input(
+      z.object({
+        status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      let statusCondition = {};
+
+      if (input.status) {
+        statusCondition = { status: input.status };
+      }
+
+      const issues = await ctx.db.issue.findMany({
+        where: statusCondition,
+      });
+
+      return {
+        length: issues.length,
+      };
+    }),
+
+  paginated: publicProcedure
     .input(
       z.object({
         status: z.enum(["OPEN", "CLOSED", "IN_PROGRESS"]).nullish(),
         orderOption: z.any(), //check this
+        page: z.number().positive().default(1),
       }),
     )
     .query(({ ctx, input }) => {
@@ -62,6 +95,8 @@ export const issueRouter = createTRPCRouter({
       return ctx.db.issue.findMany({
         where: statusCondition,
         orderBy: orderCondition,
+        take: 10,
+        skip: (input.page - 1) * 10,
       });
     }),
 
