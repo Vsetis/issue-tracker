@@ -1,4 +1,5 @@
 import { Select } from "@radix-ui/themes";
+import { useState } from "react";
 
 const SelectMenu = ({
   items,
@@ -9,9 +10,17 @@ const SelectMenu = ({
   onValueChange?: (param: string) => void;
   defaultValue?: string;
 }) => {
+  const [show, setShow] = useState(false);
+
   return (
-    <div>
+    <>
+      <div
+        className={`${
+          show ? "" : "hidden"
+        } absolute left-0 top-0 z-[10]  h-screen w-full`}
+      />
       <Select.Root
+        onOpenChange={() => setShow(false)}
         defaultValue={defaultValue ?? items[0]!.value}
         onValueChange={onValueChange}
       >
@@ -19,14 +28,18 @@ const SelectMenu = ({
         <Select.Content>
           <Select.Group>
             {items.map((item, i) => (
-              <Select.Item key={i} value={item.value}>
+              <Select.Item
+                onClick={() => setShow(!show)}
+                key={i}
+                value={item.value}
+              >
                 {item.label}
               </Select.Item>
             ))}
           </Select.Group>
         </Select.Content>
       </Select.Root>
-    </div>
+    </>
   );
 };
 
