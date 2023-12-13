@@ -13,7 +13,7 @@ export default function Pagination({
 }) {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
-  if (totalPages === 1) return null;
+  if (totalPages < 2) return null;
 
   return (
     <nav>
